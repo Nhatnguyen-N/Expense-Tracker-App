@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { verticalScale } from "@/utils/styling";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { TransactionItemProps, TransactionListType } from "@/types";
 import Typo from "./Typo";
 import { FlashList } from "@shopify/flash-list";
+import Loading from "./Loading";
+import { expenseCategories } from "@/constants/data";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function TransactionList({
   data,
@@ -42,6 +45,11 @@ export default function TransactionList({
           {emptyListMessage}
         </Typo>
       )}
+      {loading && (
+        <View style={{ top: verticalScale(100) }}>
+          <Loading />
+        </View>
+      )}
     </View>
   );
 }
@@ -50,10 +58,45 @@ const TransactionItem = ({
   index,
   handleClick,
 }: TransactionItemProps) => {
+  let category = expenseCategories[item.category!];
+  const IconComponent = category.icon;
   return (
-    <View>
-      <Typo>Transaction Item</Typo>
-    </View>
+    <Animated.View
+      entering={FadeInDown.delay(index * 50)
+        .springify()
+        .damping(14)}
+      key={index}
+    >
+      <TouchableOpacity style={styles.row} onPress={() => handleClick(item)}>
+        <View style={[styles.icon, { backgroundColor: category.bgColor }]}>
+          {IconComponent && (
+            <IconComponent
+              size={verticalScale(25)}
+              weight="fill"
+              color={colors.white}
+            />
+          )}
+        </View>
+        <View style={styles.categoryDes}>
+          <Typo size={17}>{category.label}</Typo>
+          <Typo
+            size={12}
+            color={colors.neutral400}
+            textProps={{ numberOfLines: 1 }}
+          >
+            {item.description}
+          </Typo>
+        </View>
+        <View style={styles.amountDate}>
+          <Typo fontWeight={"500"} color={colors.primary}>
+            + $23
+          </Typo>
+          <Typo size={13} color={colors.neutral400}>
+            12 Jan
+          </Typo>
+        </View>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
