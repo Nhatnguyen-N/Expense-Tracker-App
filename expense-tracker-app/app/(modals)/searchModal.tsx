@@ -1,26 +1,17 @@
-import { View, StyleSheet, ScrollView, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
-import { colors, spacingX, spacingY } from "@/constants/theme";
-import { scale, verticalScale } from "@/utils/styling";
+import { View, StyleSheet, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { colors, spacingY } from "@/constants/theme";
 import ModalWrapper from "@/components/ModalWrapper";
 import Header from "@/components/Header";
 import BackButton from "@/components/BackButton";
-import { TransactionType, WalletType } from "@/types";
-import Typo from "@/components/Typo";
+import { TransactionType } from "@/types";
 import Input from "@/components/Input";
-import Button from "@/components/Button";
 import { useAuth } from "@/context/authContext";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import ImageUpload from "@/components/ImageUpload";
-import { createOrUpdateWallet, deleteWallet } from "@/services/walletService";
-import * as Icons from "phosphor-react-native";
 import { limit, orderBy, where } from "firebase/firestore";
 import useFetchData from "@/hooks/useFetchData";
 import TransactionList from "@/components/TransactionList";
 export default function SearchModal() {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const [search, setSearch] = useState("");
 
   const constraints = [

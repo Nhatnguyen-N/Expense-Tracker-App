@@ -33,6 +33,7 @@ export default function WalletModal() {
         image: oldWallet?.image,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async () => {

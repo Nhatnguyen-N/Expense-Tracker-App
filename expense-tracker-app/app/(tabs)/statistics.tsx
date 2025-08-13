@@ -1,4 +1,4 @@
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import ScreenWrap from "@/components/ScreenWrap";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
@@ -6,7 +6,6 @@ import { scale, verticalScale } from "@/utils/styling";
 import Header from "@/components/Header";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { BarChart } from "react-native-gifted-charts";
-import Typo from "@/components/Typo";
 import Loading from "@/components/Loading";
 import { useAuth } from "@/context/authContext";
 import {
@@ -33,7 +32,9 @@ const Statistics = () => {
     if (activeIndex === 2) {
       getYearStats();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex]);
+
   const getWeeklyStats = async () => {
     setChartLoading(true);
     let res = await fetchWeeklyStats(user?.uid as string);

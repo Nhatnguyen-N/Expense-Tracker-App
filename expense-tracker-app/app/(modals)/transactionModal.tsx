@@ -20,7 +20,6 @@ import Button from "@/components/Button";
 import { useAuth } from "@/context/authContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ImageUpload from "@/components/ImageUpload";
-import { deleteWallet } from "@/services/walletService";
 import * as Icons from "phosphor-react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { expenseCategories, transactionTypes } from "@/constants/data";
@@ -59,11 +58,7 @@ export default function TransactionModal() {
   const [showDatePicker, setShowDatePicher] = useState(false);
   const router = useRouter();
 
-  const {
-    data: wallets,
-    error: walletError,
-    loading: walletLoading,
-  } = useFetchData<WalletType>("wallets", [
+  const { data: wallets } = useFetchData<WalletType>("wallets", [
     where("uid", "==", user?.uid),
     orderBy("created", "desc"),
   ]);
@@ -88,6 +83,7 @@ export default function TransactionModal() {
         image: oldTransaction?.image || null,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async () => {
@@ -109,8 +105,6 @@ export default function TransactionModal() {
     };
     // todo: Include transaction id for updating
     if (oldTransaction.id) transactioData.id = oldTransaction.id;
-    console.log("old", transactioData);
-
     setLoading(true);
     const res = await createOrUpdateTransaction(transactioData);
     setLoading(false);

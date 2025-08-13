@@ -1,10 +1,5 @@
 import { View, Platform, TouchableOpacity, StyleSheet } from "react-native";
-import { useLinkBuilder, useTheme } from "@react-navigation/native";
-import { Text, PlatformPressable } from "@react-navigation/elements";
-import {
-  BottomTabBarProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { colors, spacingY } from "@/constants/theme";
 import { verticalScale } from "@/utils/styling";
 import * as Icons from "phosphor-react-native";
@@ -47,13 +42,6 @@ export default function CustomTabs({
     <View style={styles.tabbar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        const label: any =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
-
         const isFocused = state.index === index;
 
         const onPress = () => {

@@ -30,7 +30,6 @@ export default function ProfileModal() {
     image: null,
   });
   const [loading, setLoading] = useState(false);
-  // const [image, setImage] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,7 +53,7 @@ export default function ProfileModal() {
   };
 
   const onSubmit = async () => {
-    let { name, image } = userData;
+    let { name } = userData;
     if (!name.trim()) {
       Alert.alert("User", "Please fill all the fields");
       return;

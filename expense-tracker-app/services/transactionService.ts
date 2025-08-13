@@ -65,10 +65,12 @@ const updateWalletForNewTransaction = async (
   try {
     const walletRef = doc(firestore, "wallets", walletId);
     const walletSnapshot = await getDoc(walletRef);
+
     if (!walletSnapshot.exists()) {
       console.log("Error updating wallet for new transaction");
       return { success: false, msg: "Wallet not found" };
     }
+
     const walletData = walletSnapshot.data() as WalletType;
 
     if (type === "expense" && walletData.amount! - amount < 0) {
@@ -76,10 +78,12 @@ const updateWalletForNewTransaction = async (
         success: false, msg: "Selected wallet don't have enough balance"
       }
     }
+
     const updatedType = type === 'income' ? "totalIncome" : "totalExpenses";
     const updatedWalletAmount = type === "income"
       ? Number(walletData.amount) + amount
       : Number(walletData.amount) - amount;
+
     const updatedTotals = type === "income"
       ? Number(walletData.totalIncome) + amount
       : Number(walletData.totalExpenses) + amount;
@@ -105,16 +109,25 @@ const revertAndUpdateWallets = async (
   try {
     const originalWalletSnapshot = await getDoc(doc(firestore, "wallets", oldTransaction.walletId));
     const originalWallet = originalWalletSnapshot.data() as WalletType;
+
     let newWalletSnapshot = await getDoc(
       doc(firestore, "wallets", newWalletId)
     );
     let newWallet = newWalletSnapshot.data() as WalletType;
+
     const revertType = oldTransaction.type === "income" ? "totalIncome" : "totalExpenses";
-    const revertIncomeExpense: number = oldTransaction.type === "ïncome"
+
+    const revertIncomeExpense: number = oldTransaction.type === "income"
       ? -Number(oldTransaction.amount)
       : Number(oldTransaction.amount);
 
     const revertedWalletAmount = Number(originalWallet.amount) + revertIncomeExpense;
+    if (revertedWalletAmount < 0) {
+      return {
+        success: false,
+        msg: "Original wallet would have negative balance after reverting transaction"
+      };
+    }
     // wallet amount, after the transaction is removed
     const revertedIncomeExpenseAmount = Number(originalWallet[revertType]) - Number(oldTransaction.amount);
 
@@ -143,6 +156,7 @@ const revertAndUpdateWallets = async (
       doc(firestore, "wallets", newWalletId)
     );
     newWallet = newWalletSnapshot.data() as WalletType;
+
     const updateType = newTransactionType === 'income' ? "totalIncome" : "totalExpenses";
     const updatedTransactionAmount: number = newTransactionType === "income"
       ? Number(newTransactionAmount)
